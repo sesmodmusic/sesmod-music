@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SESMOD MUSIC</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101014;color:white;font-family:Arial,sans-serif}
+header{padding:22px 6%;background:#19191f;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:25px;font-weight:bold;color:#d7a7ff}
+.logo span{color:white}
+nav a{color:#ddd;text-decoration:none;margin-left:18px;font-size:14px}
+main{padding:35px 6%;padding-bottom:120px}
+.hero{padding:35px 25px;border-radius:18px;background:linear-gradient(120deg,#512477,#171720);margin-bottom:30px}
+.hero h1{font-size:34px;margin:0 0 10px}
+.hero p{color:#e4d8ed}
+.search{width:100%;padding:15px;border:1px solid #444;border-radius:12px;background:#202027;color:white;font-size:16px;margin:15px 0 30px}
+h2{margin-top:28px}
+.tracks{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px}
+.track{background:#1c1c24;padding:14px;border-radius:13px}
+.cover{height:135px;border-radius:9px;background:linear-gradient(140deg,#7136a2,#24243a);display:flex;align-items:center;justify-content:center;font-size:40px}
+.track h3{font-size:15px;margin:12px 0 5px}
+.track p{font-size:13px;color:#aaa;margin:0 0 12px}
+button{border:0;border-radius:20px;background:#bd79ed;color:#160d1d;padding:10px 17px;font-weight:bold;cursor:pointer}
+.empty{color:#aaa;padding:20px 0}
+footer{color:#888;text-align:center;padding:25px;font-size:13px}
+.player{position:fixed;bottom:0;left:0;right:0;background:#24232c;padding:15px 6%;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.player small{color:#aaa}
+@media(max-width:600px){header{align-items:flex-start}nav a{margin:0 12px 0 0}.hero h1{font-size:27px}.player{font-size:13px}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">SESMOD <span>MUSIC</span></div>
+<nav>
+<a href="#kesfet">Keşfet</a>
+<a href="#sanatcilar">Sanatçılar</a>
+<a href="#hakkinda">Hakkımızda</a>
+</nav>
+</header>
+<main>
+<section class="hero">
+<h1>Müziğin yeni adresi.</h1>
+<p>Bağımsız sanatçıların sesi, özgür müziğin platformu.</p>
+<button onclick="document.getElementById('kesfet').scrollIntoView()">Müziği keşfet</button>
+</section>
+<input class="search" id="search" placeholder="Şarkı veya sanatçı ara..." oninput="filterTracks()">
+<section id="kesfet">
+<h2>🎵 Müzikleri keşfet</h2>
+<div class="tracks" id="tracks">
+<div class="track" data-search="sesmod örnek şarkı">
+<div class="cover">♫</div>
+<h3>SESMOD MUSIC</h3>
+<p>Yakında burada</p>
+<button onclick="alert('Şarkılar yakında eklenecek!')">Dinle</button>
+</div>
+</div>
+</section>
+<section id="sanatcilar">
+<h2>🎤 Bağımsız sanatçılar</h2>
+<p class="empty">Sanatçı profilleri yakında burada.</p>
+</section>
+<section>
+<h2>💿 Albümler</h2>
+<p class="empty">Yeni albümler yakında burada.</p>
+</section>
+<section id="hakkinda">
+<h2>SESMOD MUSIC hakkında</h2>
+<p class="empty">Sanatçıların eserlerini dinleyicilerle buluşturan bağımsız müzik platformu.</p>
+</section>
+</main>
+<div class="player">
+<div><strong>SESMOD MUSIC</strong><br><small>Bağımsız müzik platformu</small></div>
+<div>♫ <small>Şarkılar yakında burada</small></div>
+</div>
+<footer>© 2026 SESMOD MUSIC · Tüm hakları saklıdır.</footer>
+<script>
+function filterTracks(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('.track').forEach(t=>{
+ t.style.display=t.dataset.search.includes(q)?'block':'none';
+ });
+}
+</script>
+</body>
+</html>
