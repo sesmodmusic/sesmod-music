@@ -1,74 +1,298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#10111a">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SESMOD AI STUDIO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0d0e16;--panel:#171925;--panel2:#1d2030;--line:#2b2e40;--text:#f5f5fa;--muted:#a4a8bc;--accent:#9b7cff;--accent2:#5de0c1}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#282044 0,transparent 30%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-header{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,4vw,42px);border-bottom:1px solid var(--line);position:sticky;top:0;background:#10111aeb;backdrop-filter:blur(12px);z-index:5}
-.brand{font-weight:900;letter-spacing:2px;font-size:20px}.brand span{color:var(--accent)}.private{font-size:12px;color:var(--accent2);border:1px solid #315d57;padding:6px 10px;border-radius:20px}
-main{max-width:1120px;margin:auto;padding:30px 18px 70px}.hero{padding:26px 0 20px}.eyebrow{color:var(--accent2);font-size:12px;letter-spacing:2px;font-weight:700}.hero h1{font-size:clamp(28px,5vw,46px);margin:8px 0}.hero p{color:var(--muted);max-width:680px;line-height:1.6}
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tab,button{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:11px 15px;border-radius:12px;font-weight:650;cursor:pointer}.tab.active,.primary{background:linear-gradient(110deg,#8d70f3,#6c59d6);border-color:transparent}.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:18px}.card{background:linear-gradient(145deg,#1a1c2a,#151722);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:16px}.card h2{font-size:17px;margin:0 0 16px}.field{margin:14px 0}.field label{display:block;color:#d7d8e4;font-size:13px;margin-bottom:7px}input,textarea,select{width:100%;background:#10121c;border:1px solid #34374b;color:var(--text);border-radius:11px;padding:12px;font:inherit}textarea{min-height:155px;resize:vertical;line-height:1.55}input[type=file]{padding:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hint{color:var(--muted);font-size:12px;line-height:1.5}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1}.status{padding:12px;border-radius:12px;background:#111d1c;border:1px solid #294c47;color:#b8f5e7;font-size:13px;line-height:1.5}.feature{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.feature:last-child{border:0}.ico{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:#29233e;font-size:18px}.feature b{display:block;margin-bottom:3px}.feature small{color:var(--muted);line-height:1.4}.project{padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.project:last-child{border:0}.hidden{display:none}.scene{background:#11131e;border:1px solid var(--line);padding:12px;border-radius:12px;margin:9px 0}.scene b{font-size:13px}.scene p{color:var(--muted);font-size:12px;margin:6px 0 0}.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:28px}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.row{grid-template-columns:1fr}header{padding:14px 16px}.card{padding:16px}.hero{padding-top:18px}}
+*{box-sizing:border-box}
+body{margin:0;background:#090b12;color:#f5f5f7;font-family:Arial,sans-serif}
+header{padding:22px;background:#111522;border-bottom:1px solid #292f40}
+.logo{font-size:25px;font-weight:bold;color:#b69aff}
+.logo span{color:white}
+header p{color:#9ca3b5;margin-bottom:0}
+main{max-width:950px;margin:25px auto;padding:15px}
+.card{background:#141927;border:1px solid #293147;border-radius:15px;padding:20px;margin-bottom:18px}
+h2{margin-top:0}
+input,textarea,select{width:100%;padding:13px;margin:8px 0 14px;border-radius:9px;border:1px solid #343d53;background:#0c111d;color:white;font-size:15px}
+textarea{min-height:110px;resize:vertical}
+button{background:#9270e8;color:white;border:0;padding:13px 18px;border-radius:9px;font-weight:bold;cursor:pointer;margin:4px}
+button:hover{opacity:.85}
+.secondary{background:#30394d}
+.danger{background:#a83c50}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{flex:1;min-width:120px}
+.hidden{display:none}
+.small{color:#aab1c2;font-size:13px}
+.project{background:#0d1320;padding:15px;border-radius:10px;margin:10px 0;border:1px solid #30394d}
+.status{color:#a994ff}
+#message{padding:10px;color:#d8caff}
+footer{text-align:center;padding:25px;color:#777}
 </style>
 </head>
 <body>
-<header><div class="brand">SES<span>MOD</span> AI <span style="color:#fff">STUDIO</span></div><div class="private">● Kişisel çalışma alanı</div></header>
+
+<header>
+ <div class="logo">SESMOD <span>AI STUDIO</span></div>
+ <p>Hayal et. Üret. Projene dönüştür.</p>
+</header>
+
 <main>
-<section class="hero"><div class="eyebrow">YOUR CREATIVE WORKSPACE</div><h1>Fikrini filme ve müziğe dönüştür.</h1><p>Senaryonu hazırla, sahnelerini planla, Türkçe seslendirmeyi dene ve şarkıların için klip projeleri oluştur. Bu ilk sürüm bir çalışma panelidir; gerçek yapay zekâ video üretimi için sağlayıcı bağlantıları sonraki aşamada eklenecek.</p></section>
-<nav class="tabs"><button class="tab active" data-tab="film">🎬 Film oluştur</button><button class="tab" data-tab="music">🎵 Şarkıma klip</button><button class="tab" data-tab="projects">📁 Projelerim</button></nav>
-<section id="film" class="panel">
-<div class="layout"><div>
-<div class="card"><h2>🎥 Yeni film projesi</h2>
-<div class="field"><label>Proje / film adı</label><input id="filmTitle" placeholder="Örn. Son Mesaj"></div>
-<div class="row"><div class="field"><label>Film türü</label><select id="filmGenre"><option>Dram</option><option>Aşk</option><option>Gerilim</option><option>Gizem</option><option>Belgesel</option><option>Komedi</option></select></div><div class="field"><label>Hedef süre</label><select id="filmLength"><option>1 dakika</option><option selected>3–5 dakika</option><option>10 dakika</option><option>15 dakika</option></select></div></div>
-<div class="field"><label>Senaryo / anlatım metni</label><textarea id="filmScript" placeholder="Hikâyeni buraya yaz veya yapıştır..."></textarea></div>
-<div class="actions"><button class="primary" id="splitBtn">Metni sahnelere böl</button><button id="saveFilm">Projeyi kaydet</button></div>
-<div id="scenes" class="field"></div></div>
-<div class="card"><h2>🎙️ Türkçe seslendirme denemesi</h2><div class="field"><label>Seslendirilecek metin</label><textarea id="voiceText" placeholder="Seslendirmek istediğin metni buraya yaz..."></textarea></div>
-<div class="row"><div class="field"><label>Ses</label><select id="voiceSelect"><option value="">Varsayılan Türkçe ses</option></select></div><div class="field"><label>Konuşma hızı</label><select id="voiceRate"><option value=".85">Yavaş</option><option value="1" selected>Normal</option><option value="1.12">Biraz hızlı</option></select></div></div>
-<div class="actions"><button class="primary" id="speakBtn">▶ Seslendir</button><button id="stopBtn">■ Durdur</button></div><p class="hint">Ses seçenekleri cihazının/tarayıcının sunduğu seslere bağlıdır. Bazı telefonlarda Türkçe ses paketi ayrıca yüklenmelidir.</p></div>
-</div>
-<aside>
-<div class="card"><h2>Stüdyo araçları</h2>
-<div class="feature"><div class="ico">✍️</div><div><b>Senaryo masası</b><small>Metinlerini düzenle ve sahne taslağı çıkar.</small></div></div>
-<div class="feature"><div class="ico">🎙️</div><div><b>Seslendirme</b><small>Tarayıcıdaki Türkçe metin okuma seslerini dene.</small></div></div>
-<div class="feature"><div class="ico">🎞️</div><div><b>Video üretimi</b><small>Harici video modeli bağlantısı sonraki sürümde.</small></div></div>
-<div class="feature"><div class="ico">💬</div><div><b>Altyazı</b><small>Senaryodan altyazı taslağı hazırlama sonraki adımda.</small></div></div></div>
-<div class="card"><h2>Üretim durumu</h2><div class="status" id="status">Panel hazır. Önce bir film projesi oluştur.</div></div>
-</aside></div>
+
+<section id="authSection" class="card">
+ <h2>SESMOD hesabına giriş</h2>
+ <p class="small">Projelerini kaydetmek için ücretsiz hesabını oluştur.</p>
+ <input id="email" type="email" placeholder="E-posta adresin">
+ <input id="password" type="password" placeholder="Şifren">
+ <button onclick="signUp()">Üye Ol</button>
+ <button onclick="signIn()">Giriş Yap</button>
+ <p id="authMessage"></p>
 </section>
-<section id="music" class="panel hidden"><div class="layout"><div class="card"><h2>🎵 Şarkından klip projesi</h2>
-<div class="field"><label>Şarkı adı</label><input id="songTitle" placeholder="Örn. Beni Sensizliğe Bıraktın"></div>
-<div class="field"><label>Şarkı dosyan (MP3 / WAV)</label><input id="songFile" type="file" accept="audio/*"></div>
-<div class="field"><label>Klip fikri / hikâye</label><textarea id="songIdea" placeholder="Şarkının duygusunu, karakterleri ve klipte görmek istediğin sahneleri anlat..."></textarea></div>
-<div class="row"><div class="field"><label>Görüntü formatı</label><select id="aspect"><option>16:9 YouTube</option><option>9:16 Shorts / TikTok</option><option>1:1 Kare</option></select></div><div class="field"><label>Klip tarzı</label><select id="clipStyle"><option>Sinematik gerçekçilik</option><option>Animasyon</option><option>Hikâyeli kısa film</option><option>Performans klibi</option></select></div></div>
-<div class="actions"><button class="primary" id="saveMusic">Klip projesini kaydet</button><button id="playMusic">Şarkıyı dinle</button></div><audio id="audioPlayer" controls class="hidden" style="width:100%;margin-top:12px"></audio><p class="hint">Bu sürüm şarkı dosyanı cihazında önizler ve proje bilgilerini kaydeder; henüz otomatik klip render etmez.</p></div>
-<aside class="card"><h2>Klip üretim akışı</h2><div class="feature"><div class="ico">1</div><div><b>Şarkıyı yükle</b><small>MP3 veya WAV dosyanı seç.</small></div></div><div class="feature"><div class="ico">2</div><div><b>Hikâyeyi belirle</b><small>Klipteki olayları ve atmosferi yaz.</small></div></div><div class="feature"><div class="ico">3</div><div><b>Sahneleri üret</b><small>Video sağlayıcısı bağlandığında sahne üretimi açılacak.</small></div></div><div class="feature"><div class="ico">4</div><div><b>Birleştir ve dışa aktar</b><small>Ses, görüntü ve altyazı tek videoda birleşecek.</small></div></div></aside></div></section>
-<section id="projects" class="panel hidden"><div class="card"><h2>📁 Kaydedilen projeler</h2><div id="projectList" class="hint">Henüz kayıtlı proje yok.</div><div class="actions"><button id="exportProjects">Projeleri JSON olarak indir</button><button id="clearProjects">Bu cihazdaki kayıtları sil</button></div><p class="hint">Şimdilik kayıtlar yalnızca kullandığın tarayıcıda tutulur. Cihazlar arasında eşitleme için güvenli kullanıcı hesabı ve veritabanı sonraki aşamada kurulacak.</p></div></section>
-<div class="foot">SESMOD AI STUDIO · İlk prototip · Kişisel kullanım</div>
+
+<section id="studioSection" class="hidden">
+ <div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+   <div>
+    <h2>Stüdyon</h2>
+    <p class="small" id="userEmail"></p>
+   </div>
+   <button class="secondary" onclick="signOut()">Çıkış Yap</button>
+  </div>
+ </div>
+
+ <div class="tabs">
+  <button class="tab" onclick="showTab('film')">🎬 Film Stüdyosu</button>
+  <button class="tab" onclick="showTab('music')">🎵 Şarkıma Klip</button>
+  <button class="tab" onclick="showTab('projects')">📁 Projelerim</button>
+ </div>
+
+ <section id="film" class="card">
+  <h2>🎬 Film Oluştur</h2>
+  <label>Film adı</label>
+  <input id="filmTitle" placeholder="Örnek: Son Mesaj">
+  <label>Film konusu</label>
+  <textarea id="filmStory" placeholder="Filmin konusunu anlat..."></textarea>
+  <label>Film türü</label>
+  <select id="filmGenre">
+   <option>Dram</option>
+   <option>Aşk</option>
+   <option>Gerilim</option>
+   <option>Aksiyon</option>
+   <option>Bilim Kurgu</option>
+   <option>Korku</option>
+  </select>
+  <label>Sahne sayısı</label>
+  <select id="filmScenes">
+   <option>5</option><option>10</option><option>15</option><option>20</option>
+  </select>
+  <button onclick="createProject('film')">Filmi Projelerime Kaydet</button>
+ </section>
+
+ <section id="music" class="card hidden">
+  <h2>🎵 Şarkıma Klip Hazırla</h2>
+  <label>Şarkı adı</label>
+  <input id="musicTitle" placeholder="Şarkının adı">
+  <label>Şarkı sözleri</label>
+  <textarea id="musicLyrics" placeholder="Şarkı sözlerini buraya ekle..."></textarea>
+  <label>Klip tarzı</label>
+  <select id="musicStyle">
+   <option>Sinema tarzı</option>
+   <option>Arabesk</option>
+   <option>Türkü</option>
+   <option>Pop</option>
+   <option>Rock</option>
+   <option>Dramatik</option>
+  </select>
+  <label>Şarkı dosyası (isteğe bağlı)</label>
+  <input id="musicFile" type="file" accept="audio/*">
+  <p class="small">Şimdilik dosya yalnızca bu ekranda seçilir; buluta yüklenmez.</p>
+  <button onclick="createProject('music_video')">Klip Projesini Kaydet</button>
+ </section>
+
+ <section id="projects" class="card hidden">
+  <h2>📁 Projelerim</h2>
+  <button class="secondary" onclick="loadProjects()">Yenile</button>
+  <div id="projectList">Projeler yükleniyor...</div>
+ </section>
+</section>
+
+<p id="message"></p>
 </main>
+
+<footer>SESMOD AI STUDIO © 2026</footer>
+
 <script>
-const $=id=>document.getElementById(id);
-const getProjects=()=>{try{return JSON.parse(localStorage.getItem('sesmodProjects')||'[]')}catch(e){return[]}};
-const setProjects=p=>localStorage.setItem('sesmodProjects',JSON.stringify(p));
-function status(t){$('status').textContent=t}
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.panel').forEach(x=>x.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');if(b.dataset.tab==='projects')renderProjects()}));
-function saveProject(p){let all=getProjects();all.unshift({...p,id:Date.now(),savedAt:new Date().toLocaleString('tr-TR')});setProjects(all);status('Proje bu tarayıcıya kaydedildi.');renderProjects()}
-$('splitBtn').onclick=()=>{let t=$('filmScript').value.trim();if(!t){status('Önce senaryo metnini yaz.');return}let parts=t.split(/(?<=[.!?])\s+|\n+/).filter(Boolean);if(parts.length===1&&t.length>220){parts=t.match(/.{1,220}(?:\s|$)/g)||[t]}$('scenes').innerHTML='<b>Oluşturulan sahne taslağı ('+parts.length+')</b>'+parts.map((p,i)=>'<div class="scene"><b>Sahne '+(i+1)+'</b><p>'+escapeHtml(p)+'</p></div>').join('');status('Sahne taslağı hazır. İstersen düzenleyip projeyi kaydet.')}
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-$('saveFilm').onclick=()=>{if(!$('filmTitle').value.trim()&&!$('filmScript').value.trim()){status('Kaydetmek için proje adı veya senaryo yaz.');return}saveProject({type:'Film',title:$('filmTitle').value||'Adsız film',genre:$('filmGenre').value,length:$('filmLength').value,script:$('filmScript').value})};
-$('saveMusic').onclick=()=>{if(!$('songTitle').value.trim()&&!$('songIdea').value.trim()){alert('Şarkı adı veya klip fikri gir.');return}saveProject({type:'Müzik klibi',title:$('songTitle').value||'Adsız klip',idea:$('songIdea').value,format:$('aspect').value,style:$('clipStyle').value,file:$('songFile').files[0]?.name||''})};
-let voices=[];function loadVoices(){voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith('tr'));$('voiceSelect').innerHTML='<option value="">Varsayılan Türkçe ses</option>'+voices.map((v,i)=>'<option value="'+i+'">'+escapeHtml(v.name)+' ('+v.lang+')</option>').join('')};if('speechSynthesis'in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
-$('speakBtn').onclick=()=>{let t=$('voiceText').value.trim();if(!t){status('Seslendirmek için metin yaz.');return}if(!('speechSynthesis'in window)){status('Bu tarayıcı seslendirmeyi desteklemiyor.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='tr-TR';u.rate=Number($('voiceRate').value);let v=voices[Number($('voiceSelect').value)];if(v)u.voice=v;u.onstart=()=>status('Seslendirme başladı.');u.onerror=()=>status('Seslendirme hatası. Tarayıcı ses ayarlarını kontrol et.');speechSynthesis.speak(u)};
-$('stopBtn').onclick=()=>{speechSynthesis.cancel();status('Seslendirme durduruldu.')};
-$('songFile').onchange=()=>{let f=$('songFile').files[0];if(f){$('audioPlayer').src=URL.createObjectURL(f);$('audioPlayer').classList.remove('hidden')}};
-$('playMusic').onclick=()=>{if(!$('audioPlayer').src){alert('Önce şarkı dosyası seç.');return}$('audioPlayer').play()};
-function renderProjects(){let p=getProjects();$('projectList').innerHTML=p.length?p.map(x=>'<div class="project"><b>'+escapeHtml(x.title)+'</b> · '+escapeHtml(x.type)+'<br><span>'+escapeHtml(x.savedAt)+'</span></div>').join(''):'Henüz kayıtlı proje yok.'}
-$('exportProjects').onclick=()=>{let blob=new Blob([JSON.stringify(getProjects(),null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sesmod-projeler.json';a.click();URL.revokeObjectURL(a.href)};
-$('clearProjects').onclick=()=>{if(confirm('Bu tarayıcıdaki SESMOD proje kayıtları silinsin mi?')){localStorage.removeItem('sesmodProjects');renderProjects();status('Kayıtlar silindi.')}};
+const SUPABASE_URL = "https://izlwpgepxyzzzsvfcuph.supabase.co";
+const SUPABASE_KEY = "sb_publishable_1tRMEPEDJgHb3rz1PF4lag_2Um3_jZl";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
+
+function msg(text){
+ document.getElementById("message").textContent = text;
+}
+
+function authMsg(text){
+ document.getElementById("authMessage").textContent = text;
+}
+
+async function signUp(){
+ const email = document.getElementById("email").value.trim();
+ const password = document.getElementById("password").value;
+ if(!email || password.length < 6){
+  authMsg("E-posta gir ve en az 6 karakterli şifre kullan.");
+  return;
+ }
+ const {data,error} = await db.auth.signUp({email,password});
+ if(error){authMsg(error.message);return;}
+ authMsg("Kayıt isteği gönderildi. E-posta doğrulaması istenirse gelen kutunu kontrol et.");
+ if(data.session) await checkSession();
+}
+
+async function signIn(){
+ const email = document.getElementById("email").value.trim();
+ const password = document.getElementById("password").value;
+ const {data,error} = await db.auth.signInWithPassword({email,password});
+ if(error){authMsg(error.message);return;}
+ currentUser = data.user;
+ await showStudio();
+}
+
+async function signOut(){
+ await db.auth.signOut();
+ currentUser = null;
+ document.getElementById("studioSection").classList.add("hidden");
+ document.getElementById("authSection").classList.remove("hidden");
+ msg("Oturum kapatıldı.");
+}
+
+async function checkSession(){
+ const {data} = await db.auth.getSession();
+ if(data.session){
+  currentUser = data.session.user;
+  await showStudio();
+ }
+}
+
+async function showStudio(){
+ document.getElementById("authSection").classList.add("hidden");
+ document.getElementById("studioSection").classList.remove("hidden");
+ document.getElementById("userEmail").textContent = currentUser.email;
+ await loadProjects();
+ showTab("film");
+ msg("SESMOD AI STUDIO'ya hoş geldin.");
+}
+
+function showTab(tab){
+ ["film","music","projects"].forEach(id=>{
+  document.getElementById(id).classList.toggle("hidden",id!==tab);
+ });
+ if(tab==="projects") loadProjects();
+}
+
+async function createProject(type){
+ if(!currentUser){msg("Önce giriş yapmalısın.");return;}
+
+ let title, projectData;
+
+ if(type==="film"){
+  title = document.getElementById("filmTitle").value.trim();
+  projectData = {
+   story:document.getElementById("filmStory").value,
+   genre:document.getElementById("filmGenre").value,
+   scene_count:document.getElementById("filmScenes").value
+  };
+ }else{
+  title = document.getElementById("musicTitle").value.trim();
+  projectData = {
+   lyrics:document.getElementById("musicLyrics").value,
+   style:document.getElementById("musicStyle").value,
+   audio_filename:document.getElementById("musicFile").files[0]?.name || ""
+  };
+ }
+
+ if(!title){msg("Lütfen proje adı yaz.");return;}
+
+ const {error} = await db.from("projects").insert({
+  user_id:currentUser.id,
+  title:title,
+  project_type:type,
+  project_data:projectData,
+  status:"draft"
+ });
+
+ if(error){msg("Kayıt hatası: "+error.message);return;}
+
+ msg("Projen buluta kaydedildi.");
+ if(type==="film") document.getElementById("filmTitle").value="";
+ else document.getElementById("musicTitle").value="";
+ await loadProjects();
+ showTab("projects");
+}
+
+async function loadProjects(){
+ if(!currentUser)return;
+ const list = document.getElementById("projectList");
+ list.textContent = "Projeler yükleniyor...";
+
+ const {data,error} = await db.from("projects")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(error){list.textContent="Projeler yüklenemedi: "+error.message;return;}
+ if(!data.length){list.textContent="Henüz kayıtlı projen yok.";return;}
+
+ list.innerHTML="";
+ data.forEach(project=>{
+  const div=document.createElement("div");
+  div.className="project";
+
+  const title=document.createElement("h3");
+  title.textContent=project.title;
+
+  const type=document.createElement("p");
+  type.className="small";
+  type.textContent=project.project_type==="film"?"🎬 Film projesi":"🎵 Şarkı klibi";
+
+  const date=document.createElement("p");
+  date.className="small";
+  date.textContent=new Date(project.created_at).toLocaleString("tr-TR");
+
+  const detail=document.createElement("p");
+  detail.className="small";
+  detail.textContent=project.project_type==="film"
+   ? (project.project_data.story||"Konu eklenmemiş")
+   : (project.project_data.lyrics||"Şarkı sözleri eklenmemiş");
+
+  const del=document.createElement("button");
+  del.className="danger";
+  del.textContent="Projeyi Sil";
+  del.onclick=()=>deleteProject(project.id);
+
+  div.append(title,type,date,detail,del);
+  list.appendChild(div);
+ });
+}
+
+async function deleteProject(id){
+ if(!confirm("Bu projeyi silmek istiyor musun?"))return;
+ const {error}=await db.from("projects").delete().eq("id",id);
+ if(error){msg("Silme hatası: "+error.message);return;}
+ msg("Proje silindi.");
+ await loadProjects();
+}
+
+db.auth.onAuthStateChange((_event,session)=>{
+ currentUser=session?.user||null;
+ if(currentUser){
+  document.getElementById("authSection").classList.add("hidden");
+  document.getElementById("studioSection").classList.remove("hidden");
+  document.getElementById("userEmail").textContent=currentUser.email;
+ }
+});
+
+checkSession();
 </script>
-</body></html>
+</body>
+</html>
